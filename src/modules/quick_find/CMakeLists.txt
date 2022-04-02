@@ -1,0 +1,1 @@
+add_library(quick_find quick_find.c)
