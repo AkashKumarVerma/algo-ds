@@ -1,64 +1,70 @@
 #include <stdio.h>
+#include "./utilities/utilities.h"
+
 #define N 10
 
-void printArray(int[]);
+void print_connections(int ids[], int size) {
+  int visited[N];
 
-void printArray(int arr[]) {
-  int i, j;
-  int positions[N] = {0};
-  int connections[N][N] = {{0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}, {0}};
-  
-  for(i = 0; i < N; i++) {
-    positions[arr[i]] = positions[arr[i]] + 1;
-    connections[arr[i]][positions[arr[i]] - 1] = i;
-  }
-
-  i = 0;
-  j = 0;
-
-  printf("\n");
-
-  for(i = 0; i < N; i++) {
-    if(positions[i] > 1) {
-      for(j = 0; j < N; j++) {
-        if(j == 0) {
-          printf("%d", connections[i][j]);
-        } else {
-          int val = connections[i][j];
-          if(j != 0 && val > 0) {
-            printf(" --> %d", connections[i][j]);
-          }
+  for (int i = 0; i < N; i++) {
+    if(visited[i] != 1) {
+      int current_index= i;
+      int val_at_i = ids[i];
+      
+      if(visited[current_index] != 1) {
+        visited[current_index] = 1;
+        while(ids[current_index] != current_index) {
+          printf("%d-", current_index);
+          current_index = ids[current_index];
+          visited[current_index] = 1;
         }
+
+        printf("%d\n", current_index);
       }
-      printf("\n");
     }
   }
   printf("\n");
 }
 
+int find(int arr[], int ind) {
+  while(ind != arr[ind]) {
+    ind = arr[ind];
+  }
+  return ind;
+}
+
+int is_connected(int arr[], int p, int q) {
+  if(find(arr, p) == find(arr, q)) {
+    return  1;
+  } else {
+    return 0;
+  }
+}
+
+void connect(int arr[], int p, int q) {
+  int pid = find(arr, p);
+  arr[pid] = find(arr, q);
+}
+
 int main() {
   int p, q;
   int id[N];
+  int scan = 1;
 
   for(int i = 0; i < N; i++)
     id[i] = i;
 
-  int scan = 1;
-
   while(scan) {
     scanf("%d %d", &p, &q);
+    int connected = is_connected(id, p, q);
 
-    if(id[p] == id[q])
-      printf("%d and %d are already connected\n", p, q);
-
-    int t = id[p];
-
-    for (int i = 0; i < N; i++) {
-      if(id[i] == t) {
-        id[i] = id[q];
-      }
+    if(connected == 1) {
+      printf("Already connected\n");
+      continue;
     }
 
-    printArray(id);
+    connect(id, p, q);
+    printf("\n");
+    print_connections(id, N);
   }
 }

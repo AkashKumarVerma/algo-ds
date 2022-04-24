@@ -4,6 +4,9 @@ project(DSA)
 
 add_executable(${PROJECT_NAME} ./src/main.c)
 
+add_subdirectory(./src/utilities)
+target_link_libraries(${PROJECT_NAME} utils)
+
 # add_subdirectory(./src/modules/linked_list)
 # target_link_libraries(${PROJECT_NAME} llist)
 
